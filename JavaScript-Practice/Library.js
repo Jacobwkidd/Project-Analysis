@@ -25,19 +25,19 @@ class Library {
     }
 
     checkOutBook(book){
-        this.book.find(book => isCheckOut == true);
+        this.book = this.book.find(book => book.isCheckOut == true);
     }
 
     checkInBook(book){
-        this.book.find(book => isCheckOut == false);
+        this.book = this.book.find(book => book.isCheckOut == false);
     }
 
     findBookByTitle(title){
-        this.title.find(title => title);
+        this.title = this.title.find(title => title);
     }
 
     findBooksByAuthor(author){
-        this.author.find(author => this.book);
+        this.author.filter(author => this.book);
     }
 
     getAllCheckedOutBooks(){
