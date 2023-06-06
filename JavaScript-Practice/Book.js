@@ -8,4 +8,11 @@ class Book{
         this.isCheckOut = isCheckOut;
         this.dueDate = dueDate;
     }
+
+    checkOutBook(){
+        this.isCheckOut = true;
+    }
+    checkInBook(){
+        this.isCheckOut = false;
+    }
 }

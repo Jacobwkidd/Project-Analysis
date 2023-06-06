@@ -1,17 +1,25 @@
 
+
 class Library {
     constructor(LibraryName){
         this.name = LibraryName;
         this.books = [];
     }
+    getBooks(){
+        return library;
+    }
+
     addBook(book){
         this.books.push(book);
     }
 
-    removeBook(book){
-        this.book = this.book.filter(indivBook => indivBook !== book);
 
-        //or 
+    removeBook(title){
+        this.books = this.books.filter(indivBook => indivBook.title !== title);
+        
+
+
+        //or
         /*   - The old way of programming
             let newBookArr = [];
             for(const indivBook in this.book){
@@ -20,59 +28,102 @@ class Library {
                 }
             }
             this.books = newBookArr;
-        
+       
         */
     }
 
+
     checkOutBook(book){
-        this.book = this.book.find(book => book.isCheckOut == true);
+        //this.book = this.books.find(book => book.isCheckOut == true);
+        book.isCheckOut = true;
     }
+
 
     checkInBook(book){
-        this.book = this.book.find(book => book.isCheckOut == false);
+        //book = this.books.find(book => book.isCheckOut == false);
+        book.isCheckOut = false;
     }
+
 
     findBookByTitle(title){
-        this.title = this.title.find(title => title);
+        this.books = this.books.find(book => book.title == title);
     }
+
 
     findBooksByAuthor(author){
-        this.author.filter(author => this.book);
+        author = this.author.filter(author => this.book.author == author);
     }
+
 
     getAllCheckedOutBooks(){
-        for(int i = 0; i < this.book; i++){
-            if(!this.isCheckOut){
-                this.isCheckOut == true;
-            }
-        }
+
+
+        return this.book.filter(book => book.isCheckOut == true);  
+
+        // let checkedOut = [];
+        // for(const indBook in this.book){
+        //     if(indBook !== indBook.isCheckOut){
+        //         indBook.isCheckOut == true;
+        //         checkOutBook.push(indBook);
+        //     }
+        // }
+        // this.book = checkedOut;
     }
+
 
     getAllOverDueBook(){
-
+        this.book = this.book.filter(book => book.dueDate > dueDate);
     }
+
 
     updateBook(title, bookDataObj){
-
+        let book = this.books.find(book => book.title == title);
+        book.title = bookDataObj.title;
+        book.author = bookDataObj.author;
+        book.numPage = bookDataObj.numPage;
+        book.isCheckOut = bookDataObj.isCheckOut;
+        book.dueDate = bookDataObj.dueDate;
+       
     }
+
+    findMostPopularAuthor(){
+        let PopularAuthor = this.book.filter(book => book.author.title > book.title);
+        return PopularAuthor;
+    }
+
 
     compareTwoBook(bookOne, bookTwo){
 
+        if(bookOne.numPage < bookTwo.numPage){
+            console.log(bookTwo + " has more pages");
+        }
+        else if(bookOne.numPage > bookTwo.numPage){
+            console.log(bookOne + " has more pages");
+        }
+        else{
+            console.log("They are the same amount of pages");
+        }
     }
+
 
     AddMultipleBooks(booksArr){
 
+
     }
+
 
     saveToLocalStorage(){
         let book1 = this.book;
         localStorage.setItem('book', JSON.stringify(book1));
     }
 
+
     loadFromLocalStorage(){
 
+
     }
-    
+   
+
 
     saveToLocalStorage() {
         localStorage.setItem('libraryBooks', JSON.stringify(this.books));
@@ -85,10 +136,16 @@ class Library {
         this.books = JSON.parse(localStorage.getItem('libraryBooks')) || [];
     }
 
-    
+
+   
 }
 
 
 
 
-    
+
+
+
+
+   
+
