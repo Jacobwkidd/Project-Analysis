@@ -46,7 +46,7 @@ class Library {
 
 
     findBookByTitle(title){
-        this.books = this.books.find(book => book.title == title);
+        return this.books.find(book => book.title == title);
     }
 
 
@@ -72,7 +72,7 @@ class Library {
 
 
     getAllOverDueBook(){
-        this.book = this.book.filter(book => book.dueDate > dueDate);
+        return this.book.filter(book => book.dueDate > dueDate);
     }
 
 
@@ -83,7 +83,6 @@ class Library {
         book.numPage = bookDataObj.numPage;
         book.isCheckOut = bookDataObj.isCheckOut;
         book.dueDate = bookDataObj.dueDate;
-       
     }
 
     findMostPopularAuthor(){
@@ -95,10 +94,10 @@ class Library {
     compareTwoBook(bookOne, bookTwo){
 
         if(bookOne.numPage < bookTwo.numPage){
-            console.log(bookTwo + " has more pages");
+            return bookTwo;
         }
         else if(bookOne.numPage > bookTwo.numPage){
-            console.log(bookOne + " has more pages");
+            return bookOne;
         }
         else{
             console.log("They are the same amount of pages");
@@ -106,9 +105,10 @@ class Library {
     }
 
 
-    AddMultipleBooks(booksArr){
-
-
+    AddMultipleBooks(booksArr){ // couldn't get this.
+        booksArr.foreach( book =>{
+            books.addBook(book);
+        });
     }
 
 
@@ -119,8 +119,9 @@ class Library {
 
 
     loadFromLocalStorage(){
-
-
+        
+        localItem = localStorage.getItem(book);
+        JSON.parse(localItem);
     }
    
 
