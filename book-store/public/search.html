@@ -39,7 +39,45 @@
         </div>
         <script>
             /* function declarations */
+
+            function updateUI(data){
+                const searchResult = document.getElementById('search-results');
+                searchResult.textContent = JSON.stringify(data);
+            }
+
+
+            function search(title){
+                fetch(`/books/search?title=${title}`)
+                        .then(response => response.json())
+                        .then(book => {
+                            // const searchResult = document.getElementById('research-results');
+                            // searchResult.textContent = JSON.stringify(book);
+                            updateUI(book);
+                        });
+            }
+
+
+            function submitForm(event){
+                event.preventDefault();
+                // console.log(form);
+                // console.log("form title value:");
+                // console.log(form.title.value);
+
+                const title = form.title.value;
+                // you wouldn't have the local host to work
+                // fetch(`/books/search?title=${title}`)
+                //         .then(response => response.json())
+                //         .then(book => {
+                //             const searchResult = document.getElementById('search-results');
+                //             searchResult.textContent = JSON.stringify(book);
+                //         });
+
+                search(title);
+                form.reset();
+            }
             /* setup and function calls */
+            const form = document.getElementById("search-form");
+            form.reset();
         </script>
     </body>
 </html
