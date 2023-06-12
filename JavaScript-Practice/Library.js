@@ -52,6 +52,7 @@ class Library {
 
     findBooksByAuthor(author){
         author = this.author.filter(author => this.book.author == author);
+        return author;
     }
 
 
@@ -92,6 +93,8 @@ class Library {
 
 
     compareTwoBook(bookOne, bookTwo){
+        
+
 
         if(bookOne.numPage < bookTwo.numPage){
             return bookTwo;
@@ -113,28 +116,28 @@ class Library {
 
 
     saveToLocalStorage(){
-        let book1 = this.book;
-        localStorage.setItem('book', JSON.stringify(book1));
+        // let book1 = this.book;
+        // localStorage.setItem('book', JSON.stringify(book1));
     }
 
 
     loadFromLocalStorage(){
         
-        localItem = localStorage.getItem(book);
-        JSON.parse(localItem);
+        // localItem = localStorage.getItem(book);
+        // JSON.parse(localItem);
     }
    
 
 
     saveToLocalStorage() {
-        localStorage.setItem('libraryBooks', JSON.stringify(this.books));
-        }
-        // Load books from localStorage
-        loadFromLocalStorage() {
-        //attempts to load the value from localStorage, but if there is
-        //nothing there yet, then an empty array is returned. That is what
-        //the || [] is doing.
-        this.books = JSON.parse(localStorage.getItem('libraryBooks')) || [];
+        // localStorage.setItem('libraryBooks', JSON.stringify(this.books));
+        // }
+        // // Load books from localStorage
+        // loadFromLocalStorage() {
+        // //attempts to load the value from localStorage, but if there is
+        // //nothing there yet, then an empty array is returned. That is what
+        // //the || [] is doing.
+        // this.books = JSON.parse(localStorage.getItem('libraryBooks')) || [];
     }
 
 
