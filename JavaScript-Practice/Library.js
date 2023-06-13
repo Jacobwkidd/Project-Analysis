@@ -6,7 +6,7 @@ class Library {
         this.books = [];
     }
     getBooks(){
-        return library;
+        return this.books;
     }
 
     addBook(book){
@@ -34,14 +34,15 @@ class Library {
 
 
     checkOutBook(book){
-        //this.book = this.books.find(book => book.isCheckOut == true);
-        book.isCheckOut = true;
+        let foundBook = this.books.find(b => b == book);
+        foundBook.isCheckedOut = true;
+        
     }
 
 
     checkInBook(book){
-        //book = this.books.find(book => book.isCheckOut == false);
-        book.isCheckOut = false;
+        let foundBook = this.books.find(b => b == book);
+        foundBook.isCheckedOut = false;
     }
 
 
@@ -51,7 +52,7 @@ class Library {
 
 
     findBooksByAuthor(author){
-        author = this.author.filter(author => this.book.author == author);
+        author = this.books.filter(book => book.author == author);
         return author;
     }
 
@@ -59,7 +60,7 @@ class Library {
     getAllCheckedOutBooks(){
 
 
-        return this.book.filter(book => book.isCheckOut == true);  
+        return this.books.filter(book => book.isCheckOut == true);  
 
         // let checkedOut = [];
         // for(const indBook in this.book){
@@ -72,34 +73,37 @@ class Library {
     }
 
 
-    getAllOverDueBook(){
-        return this.book.filter(book => book.dueDate > dueDate);
+    getAllOverdueBooks(){
+        return this.books.filter(book => book.dueDate < Date.now());
     }
 
 
     updateBook(title, bookDataObj){
+      
         let book = this.books.find(book => book.title == title);
         book.title = bookDataObj.title;
         book.author = bookDataObj.author;
-        book.numPage = bookDataObj.numPage;
-        book.isCheckOut = bookDataObj.isCheckOut;
+        book.numPages = bookDataObj.numPages;
+        book.isCheckedOut = bookDataObj.isCheckedOut;
         book.dueDate = bookDataObj.dueDate;
     }
 
     findMostPopularAuthor(){
-        let PopularAuthor = this.book.filter(book => book.author.title > book.title);
+        let PopularAuthor = this.books.filter(book => book.author.title > book.title);
         return PopularAuthor;
     }
 
 
-    compareTwoBook(bookOne, bookTwo){
+    compareTwoBooks(bookOne, bookTwo){
         
+        console.log(bookOne);
+        console.log(bookTwo);
 
-
-        if(bookOne.numPage < bookTwo.numPage){
+        if(bookOne.numPages < bookTwo.numPages){
+            console.log(bookTwo.numPage);
             return bookTwo;
         }
-        else if(bookOne.numPage > bookTwo.numPage){
+        else if(bookOne.numPages > bookTwo.numPages){
             return bookOne;
         }
         else{
@@ -108,9 +112,9 @@ class Library {
     }
 
 
-    AddMultipleBooks(booksArr){ // couldn't get this.
-        booksArr.foreach( book =>{
-            books.addBook(book);
+    addMultipleBooks(booksArr){ // couldn't get this.
+        booksArr.forEach( book =>{
+            this.addBook(book);
         });
     }
 

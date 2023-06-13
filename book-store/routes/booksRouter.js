@@ -37,6 +37,27 @@ router.get('/search', (req, res) => {
         res.status(404).json({error: "book wasn't found"});
     }
 });
+//GET localhose:3000/books/{id}
+router.get('/:id', (req, res) => {
+    //get id from path params
+    const bookId = parseInt(req.params.id);
+    //look through array to find book with Id passed
+    const requestId = books.find(searchId => searchId.id === bookId);
+
+    if(requestId){
+        res.json(requestId);
+    }
+    else{
+        res.status(404).json({error: "Book by Id wasn't found"});
+    }
+});
+//PUT 
+router.put('/:id', (req, res) => {
+    const book = req.query.id;
+    const foundBook = books.find(book => book.id === book);
+
+    
+});
 
 //POST localhost:3000/books
 router.post('/', (req, res) => {

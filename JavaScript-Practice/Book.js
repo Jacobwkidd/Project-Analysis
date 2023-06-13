@@ -1,18 +1,18 @@
 
 
 class Book{
-    constructor(title, author, numPage, isCheckOut, dueDate){
+    constructor(title, author, numPages, isCheckedOut, dueDate){
         this.title = title;
         this.author = author;
-        this.numPage = numPage;
-        this.isCheckOut = isCheckOut;
+        this.numPages = numPages;
+        this.isCheckedOut = isCheckedOut;
         this.dueDate = dueDate;
     }
 
-    checkOutBook(){
-        this.isCheckOut = true;
+    checkOut(){
+        this.isCheckedOut = true;
     }
-    checkInBook(){
-        this.isCheckOut = false;
+    checkIn(){
+        this.isCheckedOut = false;
     }
 }
