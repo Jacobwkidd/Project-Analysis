@@ -7,62 +7,88 @@
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="index.html">BookApp</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-            <a class="nav-link" href="search.html">Search</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link" href="add.html">Add</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link" href="update.html">Update</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link" href="delete.html">Delete</a>
-            </li>
-            </ul>
+            <a class="navbar-brand" href="index.html">BookApp</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="search.html">Search</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="add.html">Add</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="update.html">Update</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="delete.html">Delete</a>
+                    </li>
+                </ul>
             </div>
-            </nav>
-            <div class="container">
+        </nav>
+        <div class="container">
             <h1>Update Book</h1>
             <form id="update-form" onsubmit="submitForm(event)" >
-            <div class="form-group">
-            <label for="book-id-dropdown">ID</label>
-            <select id="book-id-dropdown" class="form-control" required onchange="handleSelection(parseInt(this.value))">
-            <option value="" disabled selected>Select a book ID</option>
-            </select>
-            </div>
-            <!-- Other fields like title, author, numPages, dueDate, isCheckedOut -->
-            <label for="title">Title:</label>
-            <input type="text" id="title" title="title" required><br>
-            <br />
-            <label for="price">Price:</label>
-            <input type="number" id="price" name="price" required><br>
-            <br />
-            <button type="submit" class="btn btn-primary">Update</button>
+                <div class="form-group">
+                    <label for="book-id-dropdown">ID</label>
+                    <select id="book-id-dropdown" class="form-control" required onchange="handleSelection(parseInt(this.value))">
+                        <option value="" disabled selected>Select a book ID</option>
+                    </select>
+                </div>
+                <!-- Other fields like title, author, numPages, dueDate, isCheckedOut -->
+                <label for="title">Title:</label>
+                <input type="text" id="title" title="title" required><br>
+                <br />
+                <label for="price">Price:</label>
+                <input type="number" id="price" name="price" required><br>
+                <br />
+                <button type="submit" class="btn btn-primary">Update</button>
             </form>
             <div id="update-results"></div>
         </div>
         <script>
             /* function declarations */
             const form = document.getElementById("update-form");
-            // const bookIdDropDown = getElementById('book-id-dropdown');
+            // const bookIdDropDown = getElementById('book-id-dropdown');    --Another way of doing the thing down below
             const bookIdDropdown = form.elements['book-id-dropdown'];
+
+            function populateDropDown(book){
+                const option = document.createElement('option');
+                option.value = book.id;
+                option.textContent = book.id;
+                bookIdDropdown.append(option);
+            }
 
             function getInitialData(){
                 fetch('http://localhost:3000/books') // method chaining
                 .then(response => response.json())
                 .then(books => {
-                    console.log(books);
+                    booksArr = books;
+                    books.forEach(indivBook => {
+                        populateDropDown(indivBook);
+                    })
                     // books.forEach(individualBook => {
                     //     
                     // });
                 });//when fetch is completed THEN does the response
             }
 
+            function handleSelection(bookId){
+                const book = booksArr.find(b => b.id === bookId);
+                populateForm(book);
+            }
+
+            function populateForm(book){
+                form.title.value = book.title;
+                form.price.value = book.price;
+            }
+
         /* setup and function calls */
+
+        let booksArr = [];
+
+        getInitialData();
+
+
         </script>
     </body>
 </html>

@@ -53,8 +53,14 @@ router.get('/:id', (req, res) => {
 });
 //PUT 
 router.put('/:id', (req, res) => {
-    const book = req.query.id;
-    const foundBook = books.find(book => book.id === book);
+    const bookId = parseInt(req.params.id);
+    const foundBook = books.find(book => book.id === bookId);
+    if(foundBook){
+        res.json(foundBook);
+    }
+    else{
+        res.status(404).json({error: "Book by Id wasn't found"});
+    }
 
     
 });
