@@ -56,8 +56,9 @@
 
         function populateDropdown(meal){
             let option = document.createElement('option');
-            option.value = meal.mealName;
+            option.value = meal.id;
             // question: how would we get textContent
+            option.textContent = meal.mealName;
             mealSelect.append(option);
             
         }
@@ -67,9 +68,14 @@
             mealsDetials.innerHTML = '';
 
             let strMeal = document.createElement('h2');
+            let meals = document.createElement('p');
 
             //add data to elements
             strMeals.textContent = meal; //question
+            meals.textContent = "Meal: "  + meal;
+
+            mealsDetials.append(meals)
+            mealsDetials.append(strMeal);
             console.log(meal)
             
         }
@@ -81,7 +87,7 @@
             .then(meals => {
                 meals.foreach(meal => {
                     populateDropdown(meal);
-                    mealsDetials.append(strMeal);
+                    
                 });
             })
             .catch(error => console.log('Error: ', error))
@@ -101,12 +107,12 @@
             .then(response => response.json())
             .then(data => {
                 updateUI(data);
-                console.log("data");
+                console.log("Here");
             })
             .catch(error => console.log('Error: ', error));
         }
 
-        function submitForm(event){
+        function getMealDetails(event){
             event.preventDefault();
             sendRequest(mealSelect.value);
         }
