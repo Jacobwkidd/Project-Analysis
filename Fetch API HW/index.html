@@ -54,7 +54,68 @@
     <script>
         /* function declarations */
 
+        function populateDropdown(meal){
+            let option = document.createElement('option');
+            option.value = meal.mealName;
+            // question: how would we get textContent
+            mealSelect.append(option);
+            
+        }
+
+        function updateUI(meal){
+            //clear prevuious results
+            mealsDetials.innerHTML = '';
+
+            let strMeal = document.createElement('h2');
+
+            //add data to elements
+            strMeals.textContent = meal; //question
+            console.log(meal)
+            
+        }
+
+
+        function getData(){
+            fetch("https://www.themealdb.com/api/json/v1/1/random.php")
+            .then(response => response.json())
+            .then(meals => {
+                meals.foreach(meal => {
+                    populateDropdown(meal);
+                    mealsDetials.append(strMeal);
+                });
+            })
+            .catch(error => console.log('Error: ', error))
+        }
+        // const websiteData = ;
+        // fetch(websiteData)
+        // .then(response => response.json())
+        // .then(data => {
+        //         // getting the data from the meals
+        //         const meals = data.meals;   
+                
+        
+        //     }
+        // )
+        function sendRequest(mealName){
+            fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${mealName}`)
+            .then(response => response.json())
+            .then(data => {
+                updateUI(data);
+                console.log("data");
+            })
+            .catch(error => console.log('Error: ', error));
+        }
+
+        function submitForm(event){
+            event.preventDefault();
+            sendRequest(mealSelect.value);
+        }
 				/* setup and function calls */
+     
+
+        const form = document.getElementById("meal-form");
+        const mealSelect = document.getElementById("mealSelect"); 
+        const mealsDetials = document.getElementById("meal-details");       
     </script>
 </body>
 </html>
