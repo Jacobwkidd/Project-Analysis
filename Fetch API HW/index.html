@@ -36,7 +36,7 @@
     <div class="container my-4">
         <h1 class="text-center mb-4">Meal by Name</h1>
 
-        <form id="meal-form" class="row justify-content-center" onsubmit="getMealDetails();">
+        <form id="meal-form" class="row justify-content-center" onsubmit="getMealDetails(event);">
             <div class="col-md-6">
                 <select name="mealSelect" id="mealSelect" class="form-control mb-2">
                     <!-- Options will be added here by JavaScript -->
@@ -56,41 +56,56 @@
 
         function populateDropdown(meal){
             let option = document.createElement('option');
-            option.value = meal.id;
+            option.value = meal.strMeal;
             // question: how would we get textContent
-            option.textContent = meal.mealName;
+            option.textContent = meal.strMeal;
             mealSelect.append(option);
-            
         }
 
-        function updateUI(meal){
+        function updateUI(data){
+            console.log(data);
             //clear prevuious results
-            mealsDetials.innerHTML = '';
-
-            let strMeal = document.createElement('h2');
+            mealsDetials.innerHTML = "";
+            // console.log(mealsDetials);
+            // console.log(meal);
+            const meal = data.meals[0];
+            
+            let strMeals = document.createElement('h2');
+            let pic = document.createElement('img');
             let meals = document.createElement('p');
 
             //add data to elements
-            strMeals.textContent = meal; //question
-            meals.textContent = "Meal: "  + meal;
-
+            strMeals.textContent = meal.strMeal; 
+            pic.src = meal.strMealThumb;
+            meals.textContent = "Meal: "  + meal.strInstructions;
+            console.log(meal);
+           
+            mealsDetials.append(strMeals);
+            mealsDetials.append(pic);
             mealsDetials.append(meals)
-            mealsDetials.append(strMeal);
-            console.log(meal)
+            // console.log(meal);
             
         }
 
 
         function getData(){
-            fetch("https://www.themealdb.com/api/json/v1/1/random.php")
-            .then(response => response.json())
-            .then(meals => {
-                meals.foreach(meal => {
-                    populateDropdown(meal);
-                    
-                });
-            })
-            .catch(error => console.log('Error: ', error))
+            for(let i = 0; i < 10; i++){
+                fetch("https://www.themealdb.com/api/json/v1/1/random.php")
+                    .then(response => response.json())
+                    .then(data => { 
+                        // this is an object and this is why you cant pass through the foreach
+                        // console.log(data); // you have to do data.meals because data is an object 
+                        // and as an object you can't pass through foreach function... only arrays can be pass through
+
+                        // data.meals.forEach(meal => {
+                        //     populateDropdown(meal);
+                        // });
+                        const meal = data.meals[0];
+                        populateDropdown(meal);
+                    })
+
+            }    
+                // .catch(error => console.log('Error: ', error))
         }
         // const websiteData = ;
         // fetch(websiteData)
@@ -103,13 +118,15 @@
         //     }
         // )
         function sendRequest(mealName){
+            console.log(mealName);
             fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${mealName}`)
             .then(response => response.json())
             .then(data => {
+                //console.log(data);
                 updateUI(data);
-                console.log("Here");
+                
             })
-            .catch(error => console.log('Error: ', error));
+            //.catch(error => console.log('Error: ', error));
         }
 
         function getMealDetails(event){
@@ -118,10 +135,11 @@
         }
 				/* setup and function calls */
      
-
+        
         const form = document.getElementById("meal-form");
         const mealSelect = document.getElementById("mealSelect"); 
-        const mealsDetials = document.getElementById("meal-details");       
+        const mealsDetials = document.getElementById("meal-details"); 
+        getData();      
     </script>
 </body>
 </html>
