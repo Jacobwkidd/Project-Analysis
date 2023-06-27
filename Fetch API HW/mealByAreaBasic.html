@@ -11,7 +11,7 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
                     <a class="nav-link text-white" href="mealByCategoryBasic.html">Meal By Category (Basic)</a>
-                </li>
+                </li> 
                 <li class="nav-item">
                     <a class="nav-link text-white" href="mealByCategoryElegant.html">Meal By Category (Elegant)</a>
                 </li>
@@ -38,7 +38,7 @@
 
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <form onsubmit="getMealsByArea();" class="form-inline mb-4 justify-content-center">
+                <form onsubmit="getMealsByArea(event);" class="form-inline mb-4 justify-content-center" id="meal-form">
                     <label for="areaSelect" class="mr-2">Area:</label>
                     <select name="areaSelect" id="areaSelect" class="form-control mr-2" required>
                         <option value="">--Please choose an area--</option>
@@ -55,8 +55,59 @@
 
     <script>
         /* function declarations */
+        function populateDropdown(meal){
+            let option = document.createElement('option');
+            option.value = meal.strArea;
+            option.textContent = meal.strArea;
+            areaSelect.append(option);
+        }
+
+        function updateUI(data){
+            mealList.innerHTML = "";
+            console.log(data)
+            let meal = data.meals[0]; // getting the object to an array so it can 
+            //post it on the screen
+
+            let strMeals = document.createElement('p');
+
+            strMeals.textContent = meal.strMeal;
+            console.log(strMeals);
+            console.log("----------------------");
+            //console.log(strMeal); //undefined 
+            mealList.append(strMeals);
+            //console.log(meals);
+        }
+
+        function getData(){
+            for(let i = 0; i < 10; i++){
+                fetch("https://www.themealdb.com/api/json/v1/1/list.php?a=list")
+                .then(response => response.json())
+                .then(data => {
+                    const meal = data.meals[0];
+                    console.log(meal + " inside the getData");
+                    populateDropdown(meal);
+                });
+            }
+        }
+
+        function sendRequest(area){
+            fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?a=${area}`)
+            .then(response => response.json())
+            .then(data => {
+                updateUI(data);
+            });
+        }
+
+        function getMealsByArea(event){
+            event.preventDefault();
+            sendRequest(areaSelect.value);
+        }
 
 				/* setup and function calls */
+        const form = document.getElementById("meal-form");
+        const areaSelect = document.getElementById("areaSelect");
+        const mealList = document.getElementById("meal-list");
+        getData();    
     </script>
 </body>
 </html>

@@ -38,7 +38,7 @@
 
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <form id="category-form" onsubmit="getMealsByCategory();">
+                <form id="category-form" onsubmit="getMealsByCategory(event);">
                     <div class="input-group mb-4">
                         <select name="categorySelect" id="categorySelect" class="custom-select">
                             <!-- Categories will be added here by JavaScript -->
@@ -59,7 +59,66 @@
     <script>
 			/* function declarations */
 
+            function populateDropdown(meal){
+                let option = document.createElement('option');
+                option.value = meal.strCategory;
+                option.textContent = meal.strCategory;
+                categorySelect.append(option);
+            }
+
+            function updateUI(data){
+                mealList.innerHTML = "";
+
+                const meal = data.meals[0];
+                console.log(meal);
+
+                let strMeals = document.createElement('p');
+                
+
+                strMeals.textContent = meal.strCategory;
+
+                mealList.append(strMeals);
+            }
+
+            function getData(){
+            for(let i = 0; i < 10; i++){
+                fetch("https://www.themealdb.com/api/json/v1/1/list.php?c=list")
+                    .then(response => response.json())
+                    .then(data => { 
+                        // this is an object and this is why you cant pass through the foreach
+                        // console.log(data); // you have to do data.meals because data is an object 
+                        // and as an object you can't pass through foreach function... only arrays can be pass through
+
+                        // data.meals.forEach(meal => {
+                        //     populateDropdown(meal);
+                        // });
+                        const meal = data.meals[0];
+                        populateDropdown(meal);
+                    });
+
+            }    
+                // .catch(error => console.log('Error: ', error))
+        }
+
+            function sendRequest(category){
+                fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`)
+                .then(response => response.json())
+                .then(data => {
+                    updateUI(data);
+                });
+            }
+            
+
+            function getMealsByCategory(event){
+                event.preventDefault();
+                sendRequest(categorySelect.value);
+            }
+
 			/* setup and function calls */
+            const form = document.getElementById("category-form");
+            const categorySelect = document.getElementById("categorySelect");
+            const mealList = document.getElementById("meal-list");
+            getData();
     </script>
 </body>
 </html>

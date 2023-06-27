@@ -38,7 +38,7 @@
 
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <form onsubmit="getMealsByArea();" class="form-inline mb-4 justify-content-center">
+                <form onsubmit="getMealsByArea(event);" class="form-inline mb-4 justify-content-center" id="meal-form">
                     <label for="areaSelect" class="mr-2">Area:</label>
                     <select name="areaSelect" id="areaSelect" class="form-control mr-2" required>
                         <option value="">--Please choose an area--</option>
@@ -55,8 +55,62 @@
 
     <script>
        /* function declarations */
+        function populateDropDown(meal){
+            let option = document.createElement("option");
+            option.value = meal.strArea;
+            option.textContent = meal.strArea;
+            areaSelect.append(option);
+
+        }
+
+
+
+        function updateUI(data){
+            mealList = innerHTML = "";
+
+            const meal = data.meals[0];
+
+            let strAreas = document.createElement('p');
+            let pic = document.createElement('img');
+
+            strAreas.textContent = meal.strArea;
+            pic.src = meal.strMealThumb;
+            console.log("HERE ON UPDATE UI");
+            mealList.append(strAreas);
+            mealList.append(pic);
+        }
+
+        function getData(){
+            for(let i = 0; i < 10; i++){
+                fetch("https://www.themealdb.com/api/json/v1/1/list.php?a=list")
+                .then(response => response)
+                .then(data => {
+                    const meal = data.meals[0];
+                    populateDropDown(meal);
+                });
+            }
+        }
+
+        function sendRequest(area){
+            fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?a=${area}`)
+            .then(response => response.json())
+            .then(data => {
+                updateUI(data);
+            });
+        }
+
+
+        function getMealsByArea(event){
+            event.preventDefault();
+            sendRequest(mealList.value);
+        }
 
 				/* setup and function calls */
+
+        const form = document.getElementById("meal-form");
+        const areaSelect = document.getElementById("areaSelect");
+        const mealList = document.getElementById("meal-list");
+        getData();
     </script>
 </body>
 </html>

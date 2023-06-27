@@ -38,7 +38,7 @@
 
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <form id="category-form" onsubmit="getMealsByCategory();">
+                <form id="category-form" onsubmit="getMealsByCategory(event);">
                     <div class="input-group mb-4">
                         <select name="categorySelect" id="categorySelect" class="custom-select">
                             <!-- Categories will be added here by JavaScript -->
@@ -59,7 +59,56 @@
     <script>
         /* function declarations */
 
+        function populateDropdown(){
+            let option = document.createElement('option');
+            option.value = meal.strCatergory;
+            option.textContent = meal.strCatergory;
+            categorySelect.append(option);
+        }
+
+        function updateUI(data){
+            mealList.innerHTML = "";
+
+            const meal = data.meals[0];
+
+            let image = document.createElement('img');
+            image.src = meal.strMealThumb;
+
+            categorySelect.append(image);
+        }
+
+
+        function getData(){
+            for(let i = 0; i < 10; i++){
+                fetch("https://www.themealdb.com/api/json/v1/1/list.php?c=list")
+                .then(response => response.json())
+                .then(data => {
+                    const meal = data.meals[0];
+                    populateDropdown(meal);
+                })
+            }
+        }
+
+
+        function sendRequest(category){
+            fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`)
+            .then(response => response.json())
+            .then(data => {
+                updateUI(data);
+            });
+        }
+
+        function getMealsByCategory(event){
+            event.preventDefault();
+            sendRequest(categorySelect.value);
+        }
+
 				/* setup and function calls */
+
+        let form = document.getElementById("category-form");
+        let categorySelect = document.getElementById("categorySelect");
+        let mealList = document.getElementById("meal-list");
+        getData();
     </script>
 </body>
 </html>
