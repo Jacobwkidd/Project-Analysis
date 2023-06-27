@@ -59,22 +59,29 @@
     <script>
         /* function declarations */
 
-        function populateDropdown(){
+        function populateDropdown(meal){
             let option = document.createElement('option');
-            option.value = meal.strCatergory;
-            option.textContent = meal.strCatergory;
+            option.value = meal.strCategory;
+            option.textContent = meal.strCategory;
+            console.log(option);
             categorySelect.append(option);
         }
 
-        function updateUI(data){
+        function updateUI(mealData){
             mealList.innerHTML = "";
 
-            const meal = data.meals[0];
-
-            let image = document.createElement('img');
-            image.src = meal.strMealThumb;
-
-            categorySelect.append(image);
+            for(meal of mealData){
+                const newElem = `
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="${meal.strMealThumb}" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">${meal.strMeal}</h5>
+                    </div>
+                </div>
+                `;
+                mealList.innerHTML += newElem;
+            }
+            
         }
 
 
@@ -83,7 +90,9 @@
                 fetch("https://www.themealdb.com/api/json/v1/1/list.php?c=list")
                 .then(response => response.json())
                 .then(data => {
-                    const meal = data.meals[0];
+                    
+                    const meal = data.meals[i];
+                    console.log("getData: " + meal);
                     populateDropdown(meal);
                 })
             }
@@ -94,7 +103,7 @@
             fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`)
             .then(response => response.json())
             .then(data => {
-                updateUI(data);
+                updateUI(data.meals);
             });
         }
 

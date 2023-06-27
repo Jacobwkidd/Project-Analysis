@@ -65,16 +65,23 @@
         function updateUI(data){
             mealList.innerHTML = "";
             console.log(data)
-            let meal = data.meals[0]; // getting the object to an array so it can 
+            let meals = data.meals;
+          
+            // getting the object to an array so it can 
             //post it on the screen
+            for(let i = 0; i < meals.length; i++){
+                let paragraph = document.createElement('p');
+                paragraph.textContent = meals[i].strMeal;
+                console.log(paragraph);
+                console.log("----------------------");
+                //console.log(strMeal); //undefined 
+                mealList.append(paragraph);
+            }
+            
 
-            let strMeals = document.createElement('p');
-
-            strMeals.textContent = meal.strMeal;
-            console.log(strMeals);
-            console.log("----------------------");
-            //console.log(strMeal); //undefined 
-            mealList.append(strMeals);
+            
+            
+            
             //console.log(meals);
         }
 
@@ -83,7 +90,7 @@
                 fetch("https://www.themealdb.com/api/json/v1/1/list.php?a=list")
                 .then(response => response.json())
                 .then(data => {
-                    const meal = data.meals[0];
+                    const meal = data.meals[i];
                     console.log(meal + " inside the getData");
                     populateDropdown(meal);
                 });

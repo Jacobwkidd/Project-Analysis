@@ -53,6 +53,38 @@
 
     <script>
         /* function declarations */
+        
+
+        
+        function updateUI(meals){
+
+            let results = "";
+            //console.log(mealData);
+        
+
+            for(meal of meals){
+                const newElem = `
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="${meal.strMealThumb}" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">${meal.strMeal}</h5>
+                    </div>
+                </div>
+                `;
+                mealList.innerHTML += newElem;
+            }
+
+
+        }
+
+
+        function sendRequest(ingredient){
+            fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingredient}`)
+            .then(response => response.json())
+            .then(data => {
+                updateUI(data.meals);
+            });
+        }
 
         function getMealsByIngredient(event){
             event.preventDefault();
@@ -63,7 +95,7 @@
         
         const ingredientInput = document.getElementById("ingredientInput");
         const mealList = document.getElementById("meal-list");
-        getData();
+        
     </script>
 </body>
 </html>

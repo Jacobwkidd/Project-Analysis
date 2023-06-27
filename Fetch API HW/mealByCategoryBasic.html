@@ -61,6 +61,7 @@
 
             function populateDropdown(meal){
                 let option = document.createElement('option');
+                // console.log(meal);
                 option.value = meal.strCategory;
                 option.textContent = meal.strCategory;
                 categorySelect.append(option);
@@ -69,15 +70,15 @@
             function updateUI(data){
                 mealList.innerHTML = "";
 
-                const meal = data.meals[0];
-                console.log(meal);
+                const meals = data.meals;
+                console.log(meals);
+                for(let i = 0; i < meals.length; i++){
+                    let paragraph = document.createElement('p');
+                    paragraph.textContent = meals[i].strMeal;
 
-                let strMeals = document.createElement('p');
-                
-
-                strMeals.textContent = meal.strCategory;
-
-                mealList.append(strMeals);
+                    mealList.append(paragraph);
+                }
+               
             }
 
             function getData(){
@@ -92,7 +93,7 @@
                         // data.meals.forEach(meal => {
                         //     populateDropdown(meal);
                         // });
-                        const meal = data.meals[0];
+                        const meal = data.meals[i];
                         populateDropdown(meal);
                     });
 

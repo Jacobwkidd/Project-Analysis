@@ -53,41 +53,31 @@
 
     <script>
         /* function declarations */
-        function populateDropdown(meal){
-            let option = document.createElement('option');
-            option.value = meal.strMeal;
-            option.textContent = meal.strMeal;
-            mealList.append(option);
-        }
+    
 
-        function updateUI(data){
+        function updateUI(meals){
+
+
             mealList.innerHTML = "";
 
-            const meal = data.meals[0];
+            // const meals = data.meals;
+            for(let i = 0; 0 < meals.length; i ++){
+               let paragraph = document.createElement('p');
 
-            let strMeals = document.createElement('p');
+                paragraph.textContent = meals[i].strMeal;
 
-            strMeals.textContent = meal.strMeal;
-
-            mealList.append(strMeals);
-        }
-
-        function getData(){
-            for(let i = 0; i < 10; i++){
-                fetch(`https://www.themealdb.com/api/json/v1/1/filter.php`)
-                .then(response => response.json())
-                .then(data => {
-                    const meal = data.meals[i];
-                    populateDropdown(meal);
-                })
+                mealList.append(paragraph);
             }
+
+            
         }
 
         function sendRequest(ingredient){
+            console.log(ingredient);
             fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingredient}`)
             .then(response => response.json())
             .then(data => {
-                updateUI(data);
+                updateUI(data.meals);
             })
         }
 
@@ -100,7 +90,7 @@
 
         const ingredientInput = document.getElementById("ingredientInput");         
         const mealList = document.getElementById("meal-list");
-        getData();
+        
     </script>
 </body>
 </html>
