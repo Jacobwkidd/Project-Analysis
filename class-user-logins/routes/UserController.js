@@ -41,4 +41,43 @@ router.post('/register', async (req, res) => {
     res.json({message: "Successful registration", newUser});
 });
 
+//user login
+router.post('/login', async (req, res) => {
+    //get data from post body
+    const username = req.body.username;
+    const password = req.body.password;
+    const user = await User.findOne({where: {username}});
+    if(!user){
+        return res.status(404).json({message: 'User not found'});
+    }
+
+    //Check password
+    const validPassword = await bcrypt.compare(password, user.password);
+    if(!validPassword){
+        return res.status(401).json({message: 'Invalid password'});
+    }
+
+    //login the user
+    req.session.user = user;
+    res.json({message: 'Logged in successfully'});
+
+
+});
+
+
+//user logout
+router.post('/logout', (req, res) => {
+    // destroy the session 
+    req.session.destroy((err) => {
+        if(err){
+            return res.status(500).json({message: 'Could not log out.'});
+        }
+        else{
+            return res.json({message: 'Logged out was successfully'})
+        }
+    });
+});
+
+
+
 module.exports = router;
