@@ -64,6 +64,39 @@ router.post('/login', async (req, res) => {
 
 });
 
+//user update               Async is to talk to the database
+router.put('/update', async (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+    
+    if(!req.session || !req.session.user){
+        return res.status(401).json({message: 'Not Logged in'});
+    }
+
+    //find the user
+
+    const user = await User.findByPk(req.session.user.id);
+    if(!user){
+        return res.status(404).json({message: "User not found"});
+    }
+    //update the username
+    if(username){
+        user.username = username;
+    }
+
+    //change the password
+    if(password){
+        //hash the new password 
+        const hashedPassword = await bcrypt.hash(password, 10); // 10 is salt
+        //set the user's password to the new hashed password
+        user.password = hashedPassword;
+    }
+    //save the updated user
+    await user.save();
+
+    res.json({message: "updated successfully"})
+});
+
 
 //user logout
 router.post('/logout', (req, res) => {
