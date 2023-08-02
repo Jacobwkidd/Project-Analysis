@@ -19,4 +19,4 @@ const User = sequalize.define('User', {
     }
 });
 
-module.exports = Users;
+module.exports = User;
