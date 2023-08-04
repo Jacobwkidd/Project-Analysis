@@ -3,10 +3,9 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const router = express.Router(); 
 
-
-router.get('/info', (req, res) => {
+//to see if they are logged in
+router.get('./', (req, res) => {
     if(req.session && req.session.user){
-        //there is a user login
         res.json({username: req.session.user.username});
     }
     else{
@@ -14,44 +13,44 @@ router.get('/info', (req, res) => {
     }
 });
 
-//user registration
 router.post('/register', async (req, res) => {
-    //get the data from the post body in the register.js
     const username = req.body.username;
     const password = req.body.password;
-
-    //check if the user already exists
-    const userExists = await User.findOne({where: {username}});
-    if(userExists){
+    // check if the user is already taken
+    const existUser = await User.findOne({where: {username}});
+    if(existUser){
         return res.status(400).json({message: 'Username taken'});
     }
 
-    // create the new user 
+    //create the new user
 
-    //hash the password 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPass = await bcrypt.hash(password, 10);
     const newUser = await User.create({
-        username,
-        password: hashedPassword
+        username, 
+        password: hashedPass
     });
-    // await is a database call
 
-    //initialize session (Logging in user right now)
+    //await is a database call
+
+    //initialize session (logging in user right now)
     req.session.user = newUser;
     res.json({message: "Successful registration", newUser});
+
 });
+
 
 //user login
 router.post('/login', async (req, res) => {
     //get data from post body
     const username = req.body.username;
     const password = req.body.password;
-    const user = await User.findOne({where: {username}});
-    if(!user){
+
+    const foundUser = await User.findOne({where: {username}});
+    if(!foundUser){
         return res.status(404).json({message: 'User not found'});
     }
 
-    //Check password
+    //check password
     const validPassword = await bcrypt.compare(password, user.password);
     if(!validPassword){
         return res.status(401).json({message: 'Invalid password'});
@@ -59,58 +58,51 @@ router.post('/login', async (req, res) => {
 
     //login the user
     req.session.user = user;
-    res.json({message: 'Logged in successfully'});
-
-
+    res.json({message: 'Logged in successful'})
 });
 
-//user update               Async is to talk to the database
 router.put('/update', async (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
-    
-    if(!req.session || !req.session.user){
-        return res.status(401).json({message: 'Not Logged in'});
+
+    //not found user
+    if(!req.session || ! req.session.user){
+        return res.status(401).json({message: 'Not logged in'});
     }
 
-    //find the user
-
-    const user = await User.findByPk(req.session.user.id);
+    //find user
+    const user = await User.findByPK(req.session.user.id);
     if(!user){
-        return res.status(404).json({message: "User not found"});
+        return res.status(401).json({message: 'User not found'});
     }
+
     //update the username
-    if(username){
+    if(username){ // found the user.. user is found by the pk then user.username is eqaul to the new username
         user.username = username;
     }
 
-    //change the password
     if(password){
-        //hash the new password 
-        const hashedPassword = await bcrypt.hash(password, 10); // 10 is salt
-        //set the user's password to the new hashed password
+        //hash the new password
+        const hashedPassword = await bcrypt.hash(password, 10);
+        // set the users password to the new hashed password
         user.password = hashedPassword;
     }
-    //save the updated user
+
     await user.save();
 
-    res.json({message: "updated successfully"});
+    res.json({message: 'Updated User Successfully'});
 });
 
 
-//user logout
-router.post('/logout', (req, res) => {
-    // destroy the session 
-    req.session.destroy((err) => {
+router.post('/logout', async (req, res) => {
+    req.session.destory((err) => {
         if(err){
-            return res.status(500).json({message: 'Could not log out.'});
+            return res.status(500).json({message: 'Could not log out'});
         }
         else{
-            return res.json({message: 'Logged out was successfully'})
+            return res.json({message: 'Logged out was successfully'});
         }
     });
 });
-
-
 
 module.exports = router;
