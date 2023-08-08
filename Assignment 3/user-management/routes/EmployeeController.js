@@ -15,11 +15,17 @@ const MANAGER_ROLE = 1;
 */
 
 function isLoggedIn(req){    
-    
+    return req.session && // does session exist
+    req.session.user; //checking if we are logged in
 }
 
-function isLoggedInAndManager(req){    
+function isLoggedInAndManager(req){   
+    //check if it's a manager
+    return req.session && 
+    req.session.user && 
+    req.session.user.roleId === MANAGER_ROLE; // check if it's a manager
     
+
 }
 
 async function updateUserFields(existingUser, newUserData){
@@ -51,19 +57,23 @@ router.get('/', async (req, res) => {
 
     */
     // return res.json({message: userFound + " is logged in"});
-    const username = req.body.username;
-    const userFound = await User.findOne({where: {username}})
-    if(isLoggedIn(userFound)){
-        if(isLoggedInAndManager(userFound)){
-            return ;
-        }
-        else{
-            return res.json({message: "User doesn't have permission to view this page"});
-        }
-    }
-    else{
+    // const username = req.body.username;
+    // // const password = req.body.password;
+    // const userFound = await User.findOne({where: {username}});
+    // const validPassword = await bcrypt.compare(password, username.password);
+    
+    if(!isLoggedIn(userFound)){
         return res.status(401).json({message: 'User not logged in'});
     }
+    else if(isLoggedInAndManager(userFound)){
+        
+        return await userFound.drop();
+    }
+    else{
+        return res.json({message: "User doesn't have permission to view this page"});
+    }
+    
+   
 
    
 
@@ -92,70 +102,90 @@ router.get('/:id', async (req, res) => {
                     not logged in.
 
     */
-   const username = req.body.username;
-   const userFound = await User.findOne({where: username});
-   if(isLoggedIn(userFound)){
-        if(isLoggedInAndManager(userFound)){
-            if(userFound){
-                return res.json({message: userFound});
-            }
-            else{
-                return res.status(401).json({message: 'User not found'});
-            }
+//    const username = req.body.username;
+//    const userFound = await User.findOne({where: username.id});
+   
+    if(isLoggedInAndManager(req)){
+        const userFound = req.params.id;
+        if(userFound){
+           return res.json({message: userFound});
         }
-   }
-   else{
-        return res.status(401).json({message: 'User is not logged int'});
-   }
+        else{
+            return res.status(401).json({message: 'User not found'});
+        }
+    }
+   
+    else{
+            return res.status(401).json({message: 'User is not logged int'});
+    }
 
 });
 
 router.put('/:id', async (req, res) => {
 
-    /*
-        This is the route that is hit when the User with id of :id
-        is updated with the data sent in the request body. Below, you
-        will notice that there is a try-catch block. This is code that 
-        should be left in.
 
-        Steps
-        -------
+        // This is the route that is hit when the User with id of :id
+        // is updated with the data sent in the request body. Below, you
+        // will notice that there is a try-catch block. This is code that 
+        // should be left in.
+
+        // Steps
+        // -------
     
-        1) Get the employee data out of the body of thre request.
-
+        // 1) Get the employee data out of the body of thre request.
+        const postedUser = req.body;
+        
         try{
 
-            2) Get the User with the id given in the path parameter.
+           // 2) Get the User with the id given in the path parameter.
+            const user = await User.findByPk(id);
+           // 3) If that User does not exist:
+                    // return an appropriate status code along with a message indicating
+                    // that the desired User could not be found.
+            if(!user){
+                return res.status(404).json({message: "Couldn't find the user"});
+            }
+           // 4) Update the User retrieved from the database with the data given from the client.
+                // Keep in mind that the data given from the client *may not* be updating *all*
+                // of the data on the User - for example, perhaps only the username was updated, or perhaps
+                // only the employment status was updated. Therefore you must check which fields were
+                // given by the client and only update those fields on the User retrieved from the database.
+                //     Hint: Look up how to iterate over the properties of an object to see if properties exist.
+            if(postedUser.username){
+                user.username = postedUser.username;
+            }
+            //change the password
+            if(postedUser.password){
+                //hash the new password 
+                const hashedPassword = await bcrypt.hash(postedUser.password, 10); // 10 is salt
+                //set the user's password to the new hashed password
+                user.password = hashedPassword;
+            }
+            //update is employed by checkbox
 
-            3) If that User does not exist:
-                    return an appropriate status code along with a message indicating
-                    that the desired User could not be found.
+            if(postedUser.isEmployed){               
+                user.isEmployed = postedUser.isEmployed
+            }
+            
+                // Also, remember that if the password is being updated, that you must *encrypt* that password before
+                // saving it to the database. Bycrypt is also an asynchronous operation and thus must be awaited.
 
-            4) Update the User retrieved from the database with the data given from the client.
-                Keep in mind that the data given from the client *may not* be updating *all*
-                of the data on the User - for example, perhaps only the username was updated, or perhaps
-                only the employment status was updated. Therefore you must check which fields were
-                given by the client and only update those fields on the User retrieved from the database.
-                    Hint: Look up how to iterate over the properties of an object to see if properties exist.
+                // For this step, I wrote a function and called it here like so:
 
-                Also, remember that if the password is being updated, that you must *encrypt* that password before
-                saving it to the database. Bycrypt is also an asynchronous operation and thus must be awaited.
+            
 
-                For this step, I wrote a function and called it here like so:
-
-                await updateUserFields(existingUser, userFromPostBody);
-
-            5) Call the .save() method on the existingUser that was just updated. This is also an asynchronous
-                method that must be awaited.
-
-            6) Send a response back saying that the User was updated successfully.
+            // 5) Call the .save() method on the existingUser that was just updated. This is also an asynchronous
+            //     method that must be awaited.
+            await user.save();
+            // 6) Send a response back saying that the User was updated successfully.
+            res.json({message: "The response will be success"});
 
         }catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Failed to update employee' });
         }
 
-    */
+   
     
 
 });
