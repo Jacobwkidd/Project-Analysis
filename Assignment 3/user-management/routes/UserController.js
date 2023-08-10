@@ -4,7 +4,7 @@ const User = require('../models/User');
 const router = express.Router(); 
 
 //to see if they are logged in
-router.get('./', (req, res) => {
+router.get('/info', (req, res) => {
     if(req.session && req.session.user){
         res.json({username: req.session.user.username});
     }
@@ -51,13 +51,13 @@ router.post('/login', async (req, res) => {
     }
 
     //check password
-    const validPassword = await bcrypt.compare(password, user.password);
+    const validPassword = await bcrypt.compare(password, foundUser.password);
     if(!validPassword){
         return res.status(401).json({message: 'Invalid password'});
     }
 
     //login the user
-    req.session.user = user;
+    req.session.user = foundUser; //they login and we want to set them to the session
     res.json({message: 'Logged in successful'})
 });
 

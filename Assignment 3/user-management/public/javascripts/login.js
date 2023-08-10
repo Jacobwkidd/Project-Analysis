@@ -13,6 +13,7 @@ const loginForm = document.getElementById("login-form");
 
 // Function to send POST request
 async function sendPostRequest(url, data) {
+    console.log(data);
     const response = await fetch(url, {
         method: 'POST',
         headers: {
