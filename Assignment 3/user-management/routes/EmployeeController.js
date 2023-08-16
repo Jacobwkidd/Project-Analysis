@@ -23,7 +23,7 @@ function isLoggedInAndManager(req){
     //check if it's a manager
     return req.session && 
     req.session.user && 
-    req.session.user.roleId === MANAGER_ROLE; // check if it's a manager
+    req.session.user.RoleId === MANAGER_ROLE; // check if it's a manager
     
 
 }
@@ -59,15 +59,17 @@ router.get('/', async (req, res) => {
     // return res.json({message: userFound + " is logged in"});
     // const username = req.body.username;
     // // const password = req.body.password;
-    // const userFound = await User.findOne({where: {username}});
+    // const userFound = await User.findOne({where: {req.params.id}});
     // const validPassword = await bcrypt.compare(password, username.password);
+    // const userFound = await User.find({where: req.params});
     
-    if(!isLoggedIn(userFound)){
+    if(!isLoggedIn(req)){
         return res.status(401).json({message: 'User not logged in'});
     }
-    else if(isLoggedInAndManager(userFound)){
-        
-        return await userFound.drop();
+    else if(isLoggedInAndManager(req)){
+        //get all the user besides the one is currently login 
+        const employeeList = await User.findAll();
+        return res.json(employeeList);
     }
     else{
         return res.json({message: "User doesn't have permission to view this page"});
@@ -106,9 +108,11 @@ router.get('/:id', async (req, res) => {
 //    const userFound = await User.findOne({where: username.id});
    
     if(isLoggedInAndManager(req)){
-        const userFound = req.params.id;
+        const userFound = await User.findByPk(req.params.id, {
+            attributes: ['username', 'isEmployed', 'id']
+        });// somewhere 
         if(userFound){
-           return res.json({message: userFound});
+           return res.json(userFound);
         }
         else{
             return res.status(401).json({message: 'User not found'});
@@ -122,7 +126,7 @@ router.get('/:id', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-
+    console.log("============================= UPDATE ROUTE");
 
         // This is the route that is hit when the User with id of :id
         // is updated with the data sent in the request body. Below, you
@@ -134,14 +138,17 @@ router.put('/:id', async (req, res) => {
     
         // 1) Get the employee data out of the body of thre request.
         const postedUser = req.body;
-        
+        console.log("postedUser:");
+        console.log(postedUser);
         try{
 
            // 2) Get the User with the id given in the path parameter.
-            const user = await User.findByPk(id);
+            const user = await User.findByPk(postedUser.id);
+
            // 3) If that User does not exist:
                     // return an appropriate status code along with a message indicating
                     // that the desired User could not be found.
+            console.log("User: ", user);
             if(!user){
                 return res.status(404).json({message: "Couldn't find the user"});
             }
@@ -178,7 +185,7 @@ router.put('/:id', async (req, res) => {
             //     method that must be awaited.
             await user.save();
             // 6) Send a response back saying that the User was updated successfully.
-            res.json({message: "The response will be success"});
+            res.json({message: `${user.username} has been successfully updated!`});
 
         }catch (error) {
             console.error(error);

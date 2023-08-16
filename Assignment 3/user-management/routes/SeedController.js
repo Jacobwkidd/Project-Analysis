@@ -50,16 +50,16 @@ router.get('/', async (req, res) => {
                             const adminRole = await Role.create({title: "Manager"}); // 1
                             const userRole = await Role.create({title: "Employee"}); // 2      have to change the password to bcrypt.hash all the password
                             //Create Users
-                            const user1 = await User.create({username: "JohnSmith", password: (await bcrypt.hash("123", 10)), isEmployed: true, roleId: adminRole.id, Email: emailAddresses[0]});
-                            const user2 = await User.create({username: "BillyBob", password: (await bcrypt.hash("321", 10)), isEmployed: false, roleId: adminRole.id, Email: emailAddresses[1]});
-                            const user3 = await User.create({username: "SillySally", password: (await bcrypt.hash("1234", 10)), isEmployed: true, roleId: userRole.id, Email: emailAddresses[2]});
-                            const user4 = await User.create({username: "SillySally1", password: (await bcrypt.hash("1234", 10)), isEmployed: true, roleId: userRole.id, Email: emailAddresses[3]});
-                            const user5 = await User.create({username: "SillySally2", password: (await bcrypt.hash("12345", 10)), isEmployed: false, roleId: userRole.id, Email: emailAddresses[4]});
-                            const user6 = await User.create({username: "SillySally3", password: (await bcrypt.hash("123456", 10)), isEmployed: true, roleId: userRole.id, Email: emailAddresses[5]});
-                            const user7 = await User.create({username: "SillySally4", password: (await bcrypt.hash("1234567", 10)), isEmployed: false, roleId: userRole.id, Email: emailAddresses[6]});
-                            const user8 = await User.create({username: "SillySally5", password: (await bcrypt.hash("12345678", 10)), isEmployed: false, roleId: userRole.id, Email: emailAddresses[7]});
-                            const user9 = await User.create({username: "SillySally6", password: (await bcrypt.hash("123456789", 10)), isEmployed: false, roleId: userRole.id, Email: emailAddresses[8]});
-                            const user10 = await User.create({username: "SillySally7", password: (await bcrypt.hash("12345678910", 10)), isEmployed: true, roleId: userRole.id, Email: emailAddresses[9]});
+                            const user1 = await User.create({username: "JohnSmith", password: (await bcrypt.hash("123", 10)), isEmployed: true, RoleId: adminRole.id, Email: emailAddresses[0]});
+                            const user2 = await User.create({username: "BillyBob", password: (await bcrypt.hash("321", 10)), isEmployed: false, RoleId: adminRole.id, Email: emailAddresses[1]});
+                            const user3 = await User.create({username: "SillySally", password: (await bcrypt.hash("1234", 10)), isEmployed: true, RoleId: userRole.id, Email: emailAddresses[2]});
+                            const user4 = await User.create({username: "SillySally1", password: (await bcrypt.hash("1234", 10)), isEmployed: true, RoleId: userRole.id, Email: emailAddresses[3]});
+                            const user5 = await User.create({username: "SillySally2", password: (await bcrypt.hash("12345", 10)), isEmployed: false, RoleId: userRole.id, Email: emailAddresses[4]});
+                            const user6 = await User.create({username: "SillySally3", password: (await bcrypt.hash("123456", 10)), isEmployed: true, RoleId: userRole.id, Email: emailAddresses[5]});
+                            const user7 = await User.create({username: "SillySally4", password: (await bcrypt.hash("1234567", 10)), isEmployed: false, RoleId: userRole.id, Email: emailAddresses[6]});
+                            const user8 = await User.create({username: "SillySally5", password: (await bcrypt.hash("12345678", 10)), isEmployed: false, RoleId: userRole.id, Email: emailAddresses[7]});
+                            const user9 = await User.create({username: "SillySally6", password: (await bcrypt.hash("123456789", 10)), isEmployed: false, RoleId: userRole.id, Email: emailAddresses[8]});
+                            const user10 = await User.create({username: "SillySally7", password: (await bcrypt.hash("12345678910", 10)), isEmployed: true, RoleId: userRole.id, Email: emailAddresses[9]});
                             
 
                             /*
